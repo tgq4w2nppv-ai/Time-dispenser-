@@ -1,0 +1,48 @@
+# Lornes Credit Bureau (LCB) v1.0 — Reference Deployment
+
+Purpose
+- LCB converts the Toll Commitment doctrine into a measurable enforcement system.
+- Provides a ledger, reservation tracking, feedback ingestion (observations), and toll-levying endpoints to enable a feedback loop and compliance monitoring.
+
+Design goals (v1.0)
+- Lightweight, auditable ledger backed by Postgres
+- HTTP API for reservations, feedback events, and enforcement actions
+- Fast iteration: docker-compose for dev; Kubernetes/Helm recommended for production
+- Audit log of all actions for enforcement and dispute resolution
+
+Contents
+- app/ — FastAPI service
+- migrations/init.sql — DDL for Postgres tables
+- docker-compose.yml — Postgres + LCB service for local testing
+- Dockerfile — builds the LCB app image
+- .env.example — env vars for config
+
+Quick start (local)
+1. Copy files into a directory.
+2. Create .env from .env.example and optionally adjust.
+3. docker-compose up --build
+4. Service available at http://localhost:8000
+5. OpenAPI docs: http://localhost:8000/docs
+
+Core API (high level)
+- POST /reservations — create a reservation (resource usage placeholder)
+- GET /reservations/{id} — view reservation
+- POST /feedback — ingest observation/feedback (e.g., evidence of siphon behavior)
+- POST /enforce/levy — levy toll against an account based on evidence
+- GET /accounts/{account_id} — get ledger balances and history
+- GET /health — basic health check
+
+Operational checklist after deployment
+- Configure TLS and authentication (mTLS / OAuth2) for production
+- Configure retention and auditing (WAL offsite, immutable logs)
+- Integrate with detection systems that send /feedback events
+- Configure alerting (Prometheus + Alertmanager + Slack PagerDuty)
+- Add dispute-resolution workflow & human review queue
+
+Next steps
+- Add RBAC and signed events for non-repudiation
+- Add rate-limits and quotas
+- Implement deterministic toll calculations and policy store
+- Provide a UI/dashboard for investigations
+
+If you want me to create GitHub issues, a PR, or Helm charts for a specific repo, tell me the repository (owner/name) and I’ll draft the issues/PR.
