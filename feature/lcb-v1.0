@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  lcb:
+    build: ./app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lcb}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lcbpass}
+      POSTGRES_DB: ${POSTGRES_DB:-lcb}
+    volumes:
+      - lcb_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  lcb_pgdata:
